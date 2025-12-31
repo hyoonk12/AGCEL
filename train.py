@@ -27,7 +27,7 @@ def run_oracle():
     print(f'  Time            : {t1 - t0:.2f} s')
     print(f'  States          : {states_after_pretrain} -> {len(learner.v_dict)}')
     print(f'  (S,A) Pairs     : {pairs_after_pretrain} -> {learner.get_size()}')
-    print(f'  Value Function  : {os.path.basename(out_file)}')
+    print(f'  Value Function  : {out_file}')
 
 def run_cold():
     print('\nMethod: Cold (No Oracle)')
@@ -42,7 +42,7 @@ def run_cold():
     print(f'  Time            : {t3 - t2:.2f} s')
     print(f'  States          : {len(learner.v_dict)}')
     print(f'  (S,A) Pairs     : {learner.get_size()}')
-    print(f'  Value Function  : {os.path.basename(out_file)}')
+    print(f'  Value Function  : {out_file}')
 
 def run_dqn(learning_rate=5e-4,
             gamma=0.95,
