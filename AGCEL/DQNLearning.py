@@ -160,7 +160,11 @@ class DQNLearner:
 
         unique_states = len(set(tuple(exp.state.numpy()) for exp in self.replay_buffer.buffer))
 
-        print(f'  Buffer: total={n_total}, goal={n_goal} ({n_goal/n_total*100:.1f}%), non_goal={n_non_goal}, unique_states={unique_states}')
+        print(f'  Buffer')
+        print(f'    total         : {n_total}')
+        print(f'    goal          : {n_goal} ({n_goal/n_total*100:.1f}%)')
+        print(f'    non_goal      : {n_non_goal}')
+        print(f'    unique_states : {unique_states}')
 
     def select_action(self, env, obs: Dict, epsilon: Optional[float] = None) -> Optional[int]:
         """
