@@ -249,10 +249,21 @@ class DQNLearner:
             target_param.data.copy_(self.tau * param.data + (1.0 - self.tau) * target_param.data)
     
     def train(self, env, n_episodes: int, max_steps: int = 10000):
-        print(f'Hyperparameters: lr={self.learning_rate}, gamma={self.gamma}, tau={self.tau}, eps_end={self.epsilon_end}')
-        print(f'                 eps_decay={self.epsilon_decay}, target_freq={self.target_update_frequency}, goal_ratio={self.goal_ratio}')
-        print(f'                 batch_size={self.batch_size}, buffer_size={self.replay_buffer.buffer.maxlen}')
-        print(f"DQN: input_dim={self.input_dim}, num_actions={self.num_actions}, device={self.device}")
+        print('  Hyperparameters')
+        print(f'    lr            : {self.learning_rate}')
+        print(f'    gamma         : {self.gamma}')
+        print(f'    tau           : {self.tau}')
+        print(f'    epsilon_end   : {self.epsilon_end}')
+        print(f'    epsilon_decay : {self.epsilon_decay}')
+        print(f'    target_freq   : {self.target_update_frequency}')
+        print(f'    goal_ratio    : {self.goal_ratio}')
+        print(f'    batch_size    : {self.batch_size}')
+        print(f'    buffer_size   : {self.replay_buffer.buffer.maxlen}')
+        print(f'  Network')
+        print(f'    input_dim     : {self.input_dim}')
+        print(f'    num_actions   : {self.num_actions}')
+        print(f'    device        : {self.device}')
+        print('  Progress')
 
         episode_rewards = []
         episode_lengths = []
@@ -264,9 +275,8 @@ class DQNLearner:
                 eps = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * np.exp(-self.epsilon_decay * episode)
                 n_goals = len(self.replay_buffer.goal_buffer)
                 recent_loss = np.mean(self.loss_history[-50:]) if len(self.loss_history) > 50 else 0
-                print(f'  Ep {episode}: epsilon={eps:.3f}, '
-                    f'Buf={len(self.replay_buffer)}, GoalBuf={n_goals}, '
-                    f'AvgSteps={np.mean(episode_lengths[-50:]) if episode_lengths else 0:.0f}, AvgLoss={recent_loss:.4f}')
+                avg_steps = np.mean(episode_lengths[-50:]) if episode_lengths else 0
+                print(f'    Ep {episode:5d} | eps={eps:.3f} | buf={len(self.replay_buffer):5d} | goal={n_goals:4d} | steps={avg_steps:6.1f} | loss={recent_loss:.4f}')
 
             self.episode_count = episode
             obs = env.reset()
@@ -311,7 +321,7 @@ class DQNLearner:
                 self.scheduler.step(recent_avg_loss)
         
         self.diagnose_buffer()
-        print("training completed!")
+        print('  Training completed')
         
         return episode_rewards, episode_lengths
     
