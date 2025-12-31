@@ -144,14 +144,17 @@ if __name__ == "__main__":
         m = maude.getCurrentModule()
         env = MaudeEnv(m, goal_prop, lambda: init_term)
 
-        print('\n=== TRAINING SETUP ===')
-        print(f'Module: {m}')
-        print(f'Init term: {init_term}')
-        print(f'Goal proposition: {goal_prop}')
-        print(f'Training samples: {num_samples}')
-        if not sweep_mode:
-            print(f'Trace file: {trace_path}')
-        print(f'Output prefix: {output_pref}')
+        # experiment metadata
+        if mode == "oracle" or (mode == "cold" and trace_path is None):
+            print('')
+            print('Experiment')
+            print(f'  Module          : {m}')
+            print(f'  Init            : {init_term}')
+            print(f'  Goal            : {goal_prop}')
+            print(f'  Samples         : {num_samples}')
+            if trace_path and not sweep_mode:
+                print(f'  Trace           : {trace_path}')
+            print(f'  Output          : {output_pref}')
 
         if mode == "oracle":
             if trace_path is None:
