@@ -16,26 +16,30 @@ def run_bfs(m, env, n0):
     V0 = lambda obs_term, g_state=None: 0
     V0.needs_obs = False
 
-    print('\n=== SEARCH WITHOUT TRAINING (BFS) ===')
+    print('\nMethod: BFS')
+    print('-' * 40)
     start_time = time.perf_counter()
     res0 = Search().search(n0, V0, 9999)
     end_time = time.perf_counter()
-    print('[BFS] n_states:', res0[2])
-    print(f'[BFS] Elapsed time: {(end_time - start_time)*1000:.3f} ms')
-    if res0[0]: print('[BFS] Goal reached!')
+    elapsed_ms = (end_time - start_time) * 1000
+    print(f'  States          : {res0[2]}')
+    print(f'  Time            : {elapsed_ms:.3f} ms')
+    print(f'  Goal            : {"reached" if res0[0] else "not reached"}')
 
 def run_random(m, env, n0):
     """run search with random score"""
     Vr = lambda obs_term, g_state=None: random.random()
     Vr.needs_obs = False
-    
-    print('\n=== SEARCH WITH RANDOM ===')
+
+    print('\nMethod: Random')
+    print('-' * 40)
     start_time = time.perf_counter()
     res = Search().search(n0, Vr, 9999)
     end_time = time.perf_counter()
-    print('[RANDOM] n_states:', res[2])
-    print(f'[RANDOM] Elapsed time: {(end_time - start_time)*1000:.3f} ms')
-    if res[0]: print('[RANDOM] Goal reached!')
+    elapsed_ms = (end_time - start_time) * 1000
+    print(f'  States          : {res[2]}')
+    print(f'  Time            : {elapsed_ms:.3f} ms')
+    print(f'  Goal            : {"reached" if res[0] else "not reached"}')
 
 def run_qtable(m, env, n0, qtable_file):
     """run search with qtable heuristic"""
@@ -43,13 +47,15 @@ def run_qtable(m, env, n0, qtable_file):
     learner.load_value_function(qtable_file + '.agcel', m)
     V = learner.get_value_function()
 
-    print('\n=== SEARCH WITH QTABLE ===')
+    print('\nMethod: QTable')
+    print('-' * 40)
     start_time = time.perf_counter()
     res = Search().search(n0, V, 9999)
     end_time = time.perf_counter()
-    print('[QTABLE] n_states:', res[2])
-    print(f'[QTABLE] Elapsed time: {(end_time - start_time)*1000:.3f} ms')
-    if res[0]: print('[QTABLE] Goal reached!')
+    elapsed_ms = (end_time - start_time) * 1000
+    print(f'  States          : {res[2]}')
+    print(f'  Time            : {elapsed_ms:.3f} ms')
+    print(f'  Goal            : {"reached" if res[0] else "not reached"}')
 
 def run_dqn(m, env, n0, qtable_file, extra_args):
     """load DQN model for search"""
@@ -97,14 +103,22 @@ def run_dqn_mode(m, env, n0, qtable_file, extra_args, mode="dqn"):
     dqn.value_cache.clear()
     V_dqn = dqn.get_value_function(mode=mode)
 
-    label = mode.upper()
-    print(f'\n=== SEARCH WITH DQN ({label}) ===')
+    mode_names = {"zero": "DQN-Zero", "random": "DQN-Random", "dqn": "DQN"}
+    method_name = mode_names.get(mode, f"DQN-{mode.upper()}")
+
+    print(f'\nMethod: {method_name}')
+    print('-' * 40)
     start_time = time.perf_counter()
     res = Search().search(n0, V_dqn, 9999)
     end_time = time.perf_counter()
-    print(f'[DQN-{label}] n_states:', res[2])
-    print(f'[DQN-{label}] Elapsed time: {(end_time - start_time)*1000:.3f} ms')
-    print(f'[DQN-{label}] Goal reached!' if res[0] else f'[DQN-{label}] Goal not reached')
+    elapsed_ms = (end_time - start_time) * 1000
+    print(f'  States          : {res[2]}')
+    print(f'  Time            : {elapsed_ms:.3f} ms')
+    print(f'  Goal            : {"reached" if res[0] else "not reached"}')
+
+    # compare qtable and DQN value order
+    if mode == "dqn":
+        compare_qtable_dqn(qtable_file, dqn, m)
 
 
 if __name__ == "__main__":
@@ -123,13 +137,15 @@ if __name__ == "__main__":
         init_term = m.parseTerm(init); init_term.reduce()
         n0 = Node(m, init_term)
 
-        print('\n=== TEST SETUP ===')
-        print(f'Module: {m}')
-        print(f'Init term: {init}')
-        print(f'Goal proposition: {prop}')
-        print(f'QTable file: {qtable_file}')
-        if extra_args:
-            print(f'Sweep parameters: {extra_args}')
+        if mode == "bfs":
+            print('\nTest')
+            print('-' * 40)
+            print(f'  Module          : {m}')
+            print(f'  Init            : {init}')
+            print(f'  Goal            : {prop}')
+            print(f'  QTable          : {qtable_file}')
+            if extra_args:
+                print(f'  Sweep params    : {extra_args}')
 
         if mode == "bfs":
             run_bfs(m, env, n0)

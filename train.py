@@ -54,7 +54,6 @@ def run_dqn(learning_rate=5e-4,
             batch_size=64,
             buffer_size=10000,
             sweep_suffix=None):
-    print('')
     print('\nMethod: DQN')
     print('-' * 40)
     
@@ -158,8 +157,7 @@ if __name__ == "__main__":
 
         # experiment metadata
         if mode == "oracle" or (mode == "cold" and trace_path is None):
-            print('')
-            print('Experiment')
+            print('\nExperiment')
             print(f'  Module          : {m}')
             print(f'  Init            : {init_term}')
             print(f'  Goal            : {goal_prop}')
