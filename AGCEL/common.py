@@ -125,10 +125,10 @@ def compare_qtable_dqn(qtable_file, dqn, m):
 
     qtable = parse_qtable_file(qtable_file + '.agcel')
     if qtable is None:
-        print(f'[ALIGN] Skipped: Q-Table file not found ({qtable_file}.agcel)')
+        print(f'  [ALIGN] Skipped: Q-Table file not found')
         return
     if not qtable:
-        print('[ALIGN] No QTable entries found')
+        print('  [ALIGN] No QTable entries found')
         return
 
     q_vals, dqn_vals = [], []
@@ -142,13 +142,13 @@ def compare_qtable_dqn(qtable_file, dqn, m):
         dqn_val = V_dqn(obs_term)
         q_vals.append(q_val)
         dqn_vals.append(dqn_val)
-        
+
     if len(q_vals) < 2:
-        print(f'[ALIGN] Only {len(q_vals)} entries')
+        print(f'  [ALIGN] Only {len(q_vals)} entries')
         return
     
     corr, pval = spearmanr(q_vals, dqn_vals)
 
-    print(f'\n=== QTABLE vs DQN ALIGNMENT ===')
-    print(f'[ALIGN] Entries compared: {len(q_vals)}')
-    print(f'[ALIGN] Rank correlation: {corr:.4f} (pval={pval:.4f})')
+    print(f'  Alignment')
+    print(f'    Entries       : {len(q_vals)}')
+    print(f'    Spearman      : {corr:.4f} (p={pval:.4f})')

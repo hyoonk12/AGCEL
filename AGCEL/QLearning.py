@@ -181,7 +181,8 @@ class QLearner():
                 nq = q + learning_rate * (r + gamma * max_next_q - q)
                 self.set_q(s, a, nq)
 
-        print(f'Oracle matched {matched//repeat}/{total//repeat} transitions ({100*matched/total:.1f}%)')
+        print(f'  Pretrain')
+        print(f'    matched       : {matched//repeat}/{total//repeat} ({100*matched/total:.1f}%)')
         self.make_v_dict()
         
     def train(self, env, n_training_episodes):
@@ -214,6 +215,5 @@ class QLearner():
                 if done:
                     break
 
-        print('training done!')
         self.make_v_dict()
-        print(f'  # States: {len(self.v_dict)}, # (State,Action) pairs: {self.get_size()}')
+        print(f'  Training completed')
