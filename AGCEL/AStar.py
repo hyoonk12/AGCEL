@@ -112,8 +112,8 @@ class Search():
                     hit_cnt += 1
                 if next_node.is_goal():
                     if hit_cnt == 0:
-                        print(f'  Heuristic hits   : 0/{state_cnt} (no guidance)')
+                        print(f'  Heuristic hits  : 0/{state_cnt} (no guidance)')
                     else:
-                        print(f'  Heuristic hits   : {hit_cnt}/{state_cnt} ({hit_cnt/state_cnt:.1%})')
+                        print(f'  Heuristic hits  : {hit_cnt}/{state_cnt} ({hit_cnt/state_cnt:.1%})')
                     return (True, next_node, cnt)
                 que.push(score, d + 1, next_node)

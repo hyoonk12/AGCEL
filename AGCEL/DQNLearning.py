@@ -394,8 +394,6 @@ class DQNLearner:
             self.gamma = hp.get('gamma', self.gamma)
             self.tau = hp.get('tau', self.tau)
             self.batch_size = hp.get('batch_size', self.batch_size)
-        
-        print(f"Model loaded from {path}")
     
     def dump_value_function(self, filename: str, module_name: str, goal: str):
         with open(filename, 'w') as f:
