@@ -26,20 +26,36 @@ def run_bfs(m, env, n0):
     print(f'  Time            : {elapsed_ms:.3f} ms')
     print(f'  Goal            : {"reached" if res0[0] else "not reached"}')
 
-def run_random(m, env, n0):
-    """run search with random score"""
-    Vr = lambda obs_term, g_state=None: random.random()
-    Vr.needs_obs = False
-
+def run_random(m, env, n0, n_runs=10, base_seed=42):
+    """run search with random score, averaged over n_runs with fixed seeds"""
     print('\nMethod: Random')
     print('-' * 40)
-    start_time = time.perf_counter()
-    res = Search().search(n0, Vr, 9999)
-    end_time = time.perf_counter()
-    elapsed_ms = (end_time - start_time) * 1000
-    print(f'  States          : {res[2]}')
-    print(f'  Time            : {elapsed_ms:.3f} ms')
-    print(f'  Goal            : {"reached" if res[0] else "not reached"}')
+
+    total_states = 0
+    total_time = 0
+    goal_count = 0
+
+    for i in range(n_runs):
+        seed = base_seed + i
+        rng = random.Random(seed)
+        Vr = lambda obs_term, g_state=None, r=rng: r.random()
+        Vr.needs_obs = False
+
+        start_time = time.perf_counter()
+        res = Search().search(n0, Vr, 9999)
+        end_time = time.perf_counter()
+
+        total_states += res[2]
+        total_time += (end_time - start_time) * 1000
+        if res[0]:
+            goal_count += 1
+
+    avg_states = total_states / n_runs
+    avg_time = total_time / n_runs
+    print(f'  Runs            : {n_runs} (seeds {base_seed}-{base_seed + n_runs - 1})')
+    print(f'  States (avg)    : {avg_states:.1f}')
+    print(f'  Time (avg)      : {avg_time:.3f} ms')
+    print(f'  Goal            : {goal_count}/{n_runs} reached')
 
 def run_qtable(m, env, n0, qtable_file):
     """run search with qtable heuristic"""
@@ -141,7 +157,7 @@ if __name__ == "__main__":
             run_dqn_mode(m, env, n0, qtable_file, mode=dqn_mode)
         sys.exit(0)
 
-    for mode in ["bfs", "random", "qtable", "dqn-zero", "dqn-random", "dqn"]:
+    for mode in ["bfs", "random", "qtable", "dqn"]:
         envp = os.environ.copy(); envp["MODE"] = mode
         p = subprocess.Popen(
             [sys.executable, sys.argv[0], model, init, prop, qtable_file],
