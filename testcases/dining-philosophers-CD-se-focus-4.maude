@@ -7,7 +7,7 @@ mod DINING-PHILOSOPHERS-INIT4 is
   
   op init : -> Conf .
   eq init = p(0, think) || p(1, think) || p(2, think) || p(3, think) || c(0) || c(1) || c(2) || c(3) .
-  eq #N = 3 .
+  eq #N = 4 .
 endm
 
 --- search [1] init =>* C:Conf such that C:Conf |= deadlock = true .
