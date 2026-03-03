@@ -35,7 +35,7 @@ mod N-DINING-PHILOSOPHERS is
 
   rl [th]: p(I,think) => p(I,hungry) .
 
-  --- [MUTATED] CD: condition removed — was: if adj(I,J) = true
+  --- [MUTATED] CD: condition removed — if adj(I,J) = true
   rl [hs]: p(I,hungry) || c(J) => p(I,single) .
 
  crl [se]: p(I,single) || c(J) => p(I,eat)
